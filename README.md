@@ -8,6 +8,10 @@ that is simply called by using the following command in the same directory that 
 There should not be any compatibility issues with this console application between the different python versions. So 
 installing either 3.x or 2.7 should be fine.
 
+The API secrets and keys are going to be sent to you via email. Please copy and paste code I send via email into the 
+area marked 
+`PLACE API KEYS HERE`
+
 Values for the date and account are hardcoded as there weren't any stipulations about checking other accounts or 
 changing the period to check for.
 
