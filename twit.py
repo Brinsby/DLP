@@ -1,5 +1,9 @@
 import tweepy
+from tweepy import Cursor
 from tweepy import OAuthHandler
+from datetime import datetime
+from collections import Counter
+
 
 consumer_key = 'X2xwBghwKRIE2SPeLvvH1pZ7f'
 consumer_secret = 'zcoFz18rFB2uvs1rUX4pGeibFB2YG6qoP4kl7TBZScleaWP2ul'
@@ -11,23 +15,30 @@ auth.set_access_token(access_token, access_secret)
 
 api = tweepy.API(auth)
 
-# for status in tweepy.Cursor(api.home_timeline).items(10):
-#     # Process a single status
-#     print(status.text)
+item = api.get_user("deeplocal")
+hashtags = []
+tweet_count = 0
 
-query = 'python'
-#as of time of writing deeplocal has tweeted 4173 times
-max_tweets = 4173
-searched_tweets = []
-last_id = -1
-while len(searched_tweets) < max_tweets:
-    count = max_tweets - len(searched_tweets)
-    try:
-        new_tweets = api.search(q=query, count=count, max_id=str(last_id - 1))
-        if not new_tweets:
-            break
-        searched_tweets.extend(new_tweets)
-        print(new_tweets.__dict__)
-        last_id = new_tweets[-1].id
-    except tweepy.TweepError as e:
+for status in Cursor(api.user_timeline, id="deeplocal").items():
+    tweet_count += 1
+
+    if status.created_at > datetime(2017,1,1,0,0) and status.created_at < datetime(2017,12,31,11,59,59):
+        print(status.created_at)
+        if hasattr(status, "entities"):
+            entities = status.entities
+            if "hashtags" in entities:
+                for ent in entities["hashtags"]:
+                    if ent is not None:
+                        if "text" in ent:
+                            hashtag = ent["text"]
+                            if hashtag is not None:
+                                hashtags.append(hashtag)
+
+    if status.created_at < datetime(2017,1,1,0,0):
         break
+
+print("Most used hashtags:")
+for item, count in Counter(hashtags).most_common(10):
+    print(item + "\t" + str(count))
+
+print("All done. Processed " + str(tweet_count) + " tweets.")
