@@ -10,4 +10,4 @@ changing the period to check for.
 
 This program requires the following to be installed on your system.
 
-`tweepy` `pip install tweepy`
+tweepy: `pip install tweepy`
